@@ -1,0 +1,179 @@
+简介
+👯✨😄📫
+
+联通手机营业厅自动完成每日任务，领流量、签到获取积分等，月底流量不发愁。
+
+开源不易，如果本项目对你有帮助，那么就请给个star吧。😄
+
+目录
+简介
+目录
+功能
+使用方式
+Github Actions（推荐）
+1.fork本项目
+2.准备需要的参数
+3.将参数填到Secrets
+4.开启Actions
+5.进行一次push操作
+腾讯云函数（推荐）
+1.fork本项目
+2.准备需要的参数
+3.将参数填到Secrets
+4.部署
+通知推送方式
+同步上游代码
+申明
+参考项目
+功能
+ 沃之树领流量、浇水(12M日流量)
+ 每日签到(1积分+翻倍4积分+第七天1G流量日包)
+ 天天抽奖，每天三次免费机会(随机奖励)
+ 游戏中心每日打卡(连续打卡，积分递增至最高7，第七天1G流量日包)
+ 游戏中心宝箱100M任务(100M日流量+随机奖励并翻倍)
+ 4G流量包看视频、下软件任务(90M+150M七日流量)
+ 每日领取100定向积分
+ 积分抽奖，每天最多抽30次(中奖几率渺茫)
+ 冬奥积分活动(第1和7天，可领取600定向积分，其余领取300定向积分,有效期至下月底)
+ 获取每日1G流量日包(截止日期暂时不知道)
+ 邮件、钉钉、Tg、企业微信等推送运行结果
+ 自动激活即将过期流量包（到期时间1天内）
+使用方式
+Github Actions（推荐）
+1.fork本项目
+项目地址：srcrs/UnicomTask
+
+
+
+2.准备需要的参数
+手机号、服务密码、appId。
+
+其中appId的获取:
+
+安卓用户可在文件管理 --> Unicom/appid 文件中获取。
+
+苹果用户可抓取客户端登录接口获取。
+
+https://m.client.10010.com/mobileService/login.htm（解绑重新登录，在响应体中）
+
+https://m.client.10010.com/mobileService/onLine.htm（退出客户端重新进入，在请求体中）
+
+http://m.client.10010.com/mobileService/customer/getclientconfig.htm?appId=xxx&mobile=yyy（退出客户端重新进入，xxx就是）
+
+https://m.client.10010.com/mobileService/customer/accountListData.htm（退出客户端重新进入，在请求体中）
+
+其中，后三个链接在安卓也是适用的。
+
+3.将参数填到Secrets
+在Secrets中的Name和Value格式如下：
+
+Name	Value
+USERS_COVER	config.json中内容
+将config.json中内容复制下来，按照要求填写添加到Secrets中，如若选填内容不想配置，需将该行删除。如只想基本功能，无需通知和用积分抽奖，应填写如下内容：
+
+[
+    {
+        "username": "18566669999",
+        "password": "123456",
+        "appId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+]
+填写之前完后，建议本地保存一份，方便下次填写。
+
+注意json格式，最后一个要删掉逗号。建议在填写之前，使用json校验工具进行校验。
+
+注意：不要将个人信息填写到仓库config.json文件中（不要动这个文件就没事），以免泄露。
+
+多账号，参考关于多账号的使用方式
+
+
+
+4.开启Actions
+默认Actions处于禁止状态，在Actions选项中开启Actions功能，把那个绿色的长按钮点一下。如果看到左侧工作流上有黄色!号，还需继续开启。
+
+
+
+5.进行一次push操作
+push操作会触发工作流运行。
+
+删除掉README.md中的😄即可。完成后，每天早上6:30将自动完成每日任务。
+
+
+
+腾讯云函数（推荐）
+1.fork本项目
+项目地址：srcrs/UnicomTask
+
+2.准备需要的参数
+开通云函数 SCF 的腾讯云账号，在访问秘钥页面获取账号的 TENCENT_SECRET_ID，TENCENT_SECRET_KEY
+注意！为了确保权限足够，获取这两个参数时不要使用子账户！此外，腾讯云账户需要实名认证。
+
+依次登录 SCF 云函数控制台 和 SLS 控制台 开通相关服务，确保您已开通服务并创建相应服务角色 SCF_QcsRole、SLS_QcsRole
+
+手机号，服务密码，appId等等（参考2.准备需要的参数）
+
+3.将参数填到Secrets
+Name和Value格式如下：
+
+Name	Value
+TENCENT_SECRET_ID	腾讯云用户SecretID(需要主账户，子账户可能没权限)
+TENCENT_SECRET_KEY	腾讯云账户SecretKey
+USERS_COVER	config.json中内容
+如对于Secrets不知如何添加，参考3.将参数填到Secrets
+
+
+
+4.部署
+添加完上面3个Secrets后，进入Actions(上面那个不是Secrets下面那个) --> deploy for serverless，点击右边的Run workflow即可部署至腾讯云函数(如果出错请在红叉右边点击deploy for serverless查看部署任务的输出信息找出错误原因)。
+
+首次fork可能要去Actions里面同意使用Actions条款，如果Actions里面没有deploy for serverless，点一下右上角的star，deploy for serverless就会出现在Actions里面。（参考4.开启Actions）
+
+还可本地部署到腾讯云，详情见 云函数本地部署。
+
+通知推送方式
+1.邮箱
+本方式较简单，只需要填写邮箱即可，由于使用的是公共API接口，稳定性不高
+
+2.钉钉机器人
+钉钉群组自定义机器人，配置稍微复杂一些，但是稳定性高，使用方式参考如下：
+
+钉钉自定义机器人使用方式，注意安全设置部分，选择自定义关键词，填写UnicomTask。
+
+3.TgBot机器人
+类似于钉钉机器人，只需要一个token和userId，自行搜索这两个参数的获取方式。
+
+4.pushplus机器人
+类似于钉钉机器人，只需要一个token，参考获取pushplus的token。注意，升级到了新接口，要重新申请token。详情见：更新推送加推送接口
+
+5.企业微信应用通知
+企业微信自建应用，可发送消息，并且可以不借助第三方，将消息转发到普通微信。用电脑，进行企业微信登录，普通微信扫码也可登录，，按照此教程获取需要的三个值。
+
+6.IFTTT通知
+通过触发IFTTT的Webhook Trigger来通知到其它任意服务，具体可以参照IFTTT文档。
+
+7.Bark通知
+类似于钉钉机器人，只需要一个Key，IOS安装Bark即可获取Key使用文档。
+
+同步上游代码
+将参数填到Secrets
+注意！为了确保 Push 权限足够，需要 Github Personal access tokens
+
+token获取方式如下：
+
+生成新的token，点击这个链接。
+为token设置名字，然后把workflow勾选上，点击最下方Generate token即可生成token。
+在Secrets中的Name和Value格式如下：
+
+Name	Value
+TOKEN	Github Personal access tokens
+在最新的代码中，已经加上自动同步上游代码的Action，将会定时在每周五16点执行，文件地址在.github/workflows/auto_merge.yml。
+
+同时您也可以安装pull应用，也可实现自动同步上游代码。
+
+申明
+本项目仅用于学习。
+
+参考项目
+mixool/HiCnUnicom，感谢该项目对于登录部分的思路
+
+happy888888/BiliExp，参考了该项目的云函数实现
